@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  🔥 PRO IMPROVEMENT #1
+  status="WARN" : chỉ log WARN/ERROR của Log4j2 engine
+  → giảm noise, chỉ dùng DEBUG khi troubleshoot config
+  monitorInterval="30" : tự reload config mỗi 30s, không cần restart test
+-->
+<Configuration status="WARN" monitorInterval="30">
+
+    <!-- ===================== -->
+    <!-- Global Properties -->
+    <!-- ===================== -->
+    <Properties>
+
+        <!--
+          🔥 PRO IMPROVEMENT #2
+          Dùng property cho path → dễ đổi khi chạy local / CI
+        -->
+        <Property name="log-path">./logs</Property>
+
+        <!--
+          🔥 PRO IMPROVEMENT #3
+          Log pattern nâng cao:
+          - Có milliseconds (SSS)
+          - Có thread name [%t] → bắt buộc khi chạy parallel
+          - Level + class + line number → debug nhanh
+        -->
+        <Property name="log-pattern">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %c{1}:%L - %msg%n
+        </Property>
+    </Properties>
+
+    <!-- ===================== -->
+    <!-- Appenders -->
+    <!-- ===================== -->
+    <Appenders>
+
+        <!--
+          🔥 PRO IMPROVEMENT #4
+          Console Appender dùng cho debug local
+          (CI có thể tắt nếu cần)
+        -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${log-pattern}"/>
+        </Console>
+
+        <!--
+          🔥 PRO IMPROVEMENT #5
+          RollingFile cho log chính của automation
+          - Tách file theo ngày + size
+          - File đang chạy: automation.log
+        -->
+        <RollingFile name="AppFile"
+                     fileName="${log-path}/automation.log"
+                     filePattern="${log-path}/automation-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <PatternLayout pattern="${log-pattern}"/>
+
+            <!--
+              🔥 PRO IMPROVEMENT #6
+              2 điều kiện rollover:
+              - Theo ngày
+              - Theo size (5MB)
+            -->
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="5MB"/>
+            </Policies>
+
+            <!--
+              🔥 PRO IMPROVEMENT #7
+              Giữ tối đa 14 file log cũ → tránh đầy ổ cứng CI
+            -->
+            <DefaultRolloverStrategy max="14"/>
+        </RollingFile>
+
+        <!--
+          🔥 PRO IMPROVEMENT #8
+          File log RIÊNG cho ERROR
+          → rất tiện attach vào Extent Report / Jenkins
+        -->
+        <RollingFile name="ErrorFile"
+                     fileName="${log-path}/error.log"
+                     filePattern="${log-path}/error-%d{yyyy-MM-dd}.log.gz">
+
+            <PatternLayout pattern="${log-pattern}"/>
+
+            <!--
+              🔥 PRO IMPROVEMENT #9
+              Chỉ accept log level ERROR trở lên
+            -->
+            <Filters>
+                <ThresholdFilter level="ERROR"
+                                 onMatch="ACCEPT"
+                                 onMismatch="DENY"/>
+            </Filters>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+        <!--
+          🔥 PRO IMPROVEMENT #10 (RẤT QUAN TRỌNG)
+          Async Appender:
+          - Log không block Selenium WebDriver
+          - Tăng performance khi chạy parallel / CI
+        -->
+        <Async name="AsyncFile">
+            <AppenderRef ref="AppFile"/>
+            <AppenderRef ref="ErrorFile"/>
+        </Async>
+
+    </Appenders>
+
+    <!-- ===================== -->
+    <!-- Loggers -->
+    <!-- ===================== -->
+    <Loggers>
+
+        <!--
+          🔥 PRO IMPROVEMENT #11
+          Logger riêng cho Page Object
+          → DEBUG để thấy rõ từng hành động UI
+        -->
+        <Logger name="pages" level="DEBUG" additivity="false">
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+
+        <!--
+          🔥 PRO IMPROVEMENT #12
+          Logger riêng cho Test Case
+          → INFO để log flow test, tránh quá nhiều chi tiết
+        -->
+        <Logger name="tests" level="INFO" additivity="false">
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+
+        <!--
+          🔥 PRO IMPROVEMENT #13
+          Logger cho Utils / Helpers
+          → DEBUG để debug retry, wait, excel, api, ...
+        -->
+        <Logger name="utils" level="DEBUG" additivity="false">
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+
+        <!--
+          🔥 PRO IMPROVEMENT #14
+          Root logger:
+          - INFO level cho toàn app
+          - Ghi log ra Console + AsyncFile
+        -->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>

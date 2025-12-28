@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+
+  <listeners>
+		<listener class-name="utilities.ExtentReportManager"/>
+	</listeners>
+
+  <test thread-count="5" name="Test">
+  
+  	<parameter name="os" value="Mac"></parameter>
+  	<parameter name="browser" value="chrome"></parameter>
+    <classes>
+      <!-- <class name="testCases.Scenario_001_Register_Test"/> -->
+      <class name="testCases.Scenario_002_Login_Test"/>
+      <!--<class name="testCases.Scenario_002_DataDriven_Login_Test"/> -->
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
