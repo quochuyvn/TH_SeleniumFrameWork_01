@@ -120,7 +120,7 @@ public class ExtentReportManager implements ITestListener {
             // === Lấy driver từ BaseClass của test hiện tại ===
             BaseClass base = (BaseClass) result.getInstance();
 
-            String screenshotPath = ScreenshotUtil.captureScreen(
+            String screenshotPath = ScreenshotUtil.captureViewport(
                     base.getDriver(),
                     result.getMethod().getMethodName());
 

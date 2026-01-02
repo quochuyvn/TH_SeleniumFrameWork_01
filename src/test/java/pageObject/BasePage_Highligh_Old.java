@@ -8,6 +8,7 @@ import java.util.Date;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,16 +17,14 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import utilities.HighlightUtil;
-
-public class BasePage {
+public class BasePage_Highligh_Old {
 	public WebDriver driver;
 	public WebDriverWait wait;
     public Actions actions;
     public JavascriptExecutor js;
 
 
-	public BasePage(WebDriver driver) {
+	public BasePage_Highligh_Old(WebDriver driver) {
 		this.driver = driver;
 		this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         this.actions = new Actions(driver);
@@ -65,11 +64,13 @@ public class BasePage {
  ============================================================ */
 
  public void click(WebElement element) {
+	    String originalStyle = null;
 
 	    try {
 	        waitForClickable(element);
-	        HighlightUtil.blink(driver, element);
+	        originalStyle = highlight(element);
 	        element.click();
+	        unHighlight(element, originalStyle);
 	    } catch (Exception e) {
 	        captureScreenshotAuto("click_fail");
 	        throw e;
@@ -79,7 +80,7 @@ public class BasePage {
  public void clickAndNavigate(WebElement element) {
 	    try {
 	        waitForClickable(element);
-	        HighlightUtil.blink(driver, element);
+	        highlight(element);
 	        element.click();
 	    } catch (Exception e) {
 	        captureScreenshotAuto("click_navigate_fail");
@@ -89,27 +90,33 @@ public class BasePage {
 
 
  public void sendKeys(WebElement element, String text) {
+     String originalStyle = null;
 
      try {
          waitForVisible(element);
-         HighlightUtil.blink(driver, element);
+         originalStyle = highlight(element);
          element.clear();
          element.sendKeys(text);
      } catch (Exception e) {
          captureScreenshotAuto("sendkeys_fail");
          throw e;
+     } finally {
+         unHighlight(element, originalStyle);
      }
  }
 
  public String getText(WebElement element) {
+     String originalStyle = null;
 
      try {
          waitForVisible(element);
-         HighlightUtil.blink(driver, element);
+         originalStyle = highlight(element);
          return element.getText();
      } catch (Exception e) {
          captureScreenshotAuto("gettext_fail");
          throw e;
+     } finally {
+         unHighlight(element, originalStyle);
      }
  }
 
@@ -127,48 +134,138 @@ public class BasePage {
  ============================================================ */
 
  public void jsClick(WebElement element) {
+     String originalStyle = null;
 
      try {
          waitForVisible(element);
-         HighlightUtil.blink(driver, element);
+         originalStyle = highlight(element);
          js.executeScript("arguments[0].click();", element);
      } catch (Exception e) {
          captureScreenshotAuto("js_click_fail");
          throw e;
+     } finally {
+         unHighlight(element, originalStyle);
      }
  }
 
  public void scrollToElement(WebElement element) {
+     String originalStyle = null;
 
      try {
          waitForVisible(element);
-         HighlightUtil.blink(driver, element);
+         originalStyle = highlight(element);
          js.executeScript("arguments[0].scrollIntoView(true);", element);
      } catch (Exception e) {
          captureScreenshotAuto("scrollTo_fail");
          throw e;
+     } finally {
+         unHighlight(element, originalStyle);
      }
  }
 
+ /* ============================================================
+    HIGHLIGHT ELEMENT
+    - Highlight luôn bật
+    - Màu xanh để debug
+ ============================================================ */
 
+ /**
+  * Highlight element bằng viền xanh + nền xanh nhạt
+  * @return style gốc để restore
+  */
+// private String highlight(WebElement element) {
+//     if (element == null) return null;
+//
+//     // Lưu lại style gốc
+//     String originalStyle = element.getAttribute("style");
+//     
+//  // Số lần nhấp nháy
+//     int blinkTimes = 3;
+//
+////     // Highlight màu xanh background màu 
+////     js.executeScript(
+////             "arguments[0].setAttribute('style', arguments[1]);",
+////             element,
+////             originalStyle + " border: 2px solid #00FF00; background-color: #E8FFE8;"
+////     );
+//     
+//  // Chỉ highlight border màu xanh dương, KHÔNG đụng background
+//     js.executeScript(
+//             "arguments[0].setAttribute('style', arguments[1]);",
+//             element,
+//             originalStyle + "; border: 2px solid #0000FF;"
+//     );
+//
+//     // Delay cố định 500ms để dễ quan sát
+//     sleep(500);
+//
+//     return originalStyle;
+// }
+ 
+ 
+ // Nhấp nháy element
+ private String highlight(WebElement element) {
+	    if (element == null) return null;
+
+	    // Lưu style gốc
+	    String originalStyle = element.getAttribute("style");
+
+	    // Số lần nhấp nháy
+	    int blinkTimes = 3;
+
+	    for (int i = 0; i < blinkTimes; i++) {
+
+	        // Bật border xanh dương
+//	        js.executeScript(
+//	                "arguments[0].setAttribute('style', arguments[1]);",
+//	                element,
+//	                originalStyle + "; border: 2px solid #0000FF;"
+//	        );
+	        
+	        // Bật border xanh lá
+	        js.executeScript(
+	                "arguments[0].setAttribute('style', arguments[1]);",
+	                element,
+	                originalStyle + "; border: 2px solid #00FF00;"
+	        );
+	        sleep(500);
+
+	        // Tắt border (trả về style gốc)
+	        js.executeScript(
+	                "arguments[0].setAttribute('style', arguments[1]);",
+	                element,
+	                originalStyle
+	        );
+	        sleep(500);
+	    }
+
+	    // Đảm bảo restore style gốc sau cùng
+	    js.executeScript(
+	            "arguments[0].setAttribute('style', arguments[1]);",
+	            element,
+	            originalStyle
+	    );
+	    
+	    return originalStyle;
+	}
 
 
  /**
   * Trả element về style ban đầu
   */
-// private void unHighlight(WebElement element, String originalStyle) {
-//	    if (element == null || originalStyle == null) return;
-//
-//	    try {
-//	        js.executeScript(
-//	                "arguments[0].setAttribute('style', arguments[1]);",
-//	                element,
-//	                originalStyle
-//	        );
-//	    } catch (StaleElementReferenceException ignored) {
-//	        // Element đã bị stale do chuyển trang → bỏ qua là đúng
-//	    }
-//	}
+ private void unHighlight(WebElement element, String originalStyle) {
+	    if (element == null || originalStyle == null) return;
+
+	    try {
+	        js.executeScript(
+	                "arguments[0].setAttribute('style', arguments[1]);",
+	                element,
+	                originalStyle
+	        );
+	    } catch (StaleElementReferenceException ignored) {
+	        // Element đã bị stale do chuyển trang → bỏ qua là đúng
+	    }
+	}
 
  /* ============================================================
     COMMON UTILITY
