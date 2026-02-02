@@ -1,0 +1,53 @@
+@startuml
+skinparam linetype ortho
+hide empty members
+
+class Scenario_002_Login_Test {
+    +loginTest()
+}
+
+class BaseClass {
+    #WebDriver driver
+    +setup()
+    +tearDown()
+}
+
+class DriverFactory {
+    +getDriver() : WebDriver
+}
+
+class BasePage {
+    #WebDriver driver
+    +click()
+    +sendKeys()
+    +waitForVisible()
+}
+
+class LoginPage {
+    +login(username, password)
+}
+
+class HomePage {
+    +isHomePageDisplayed()
+}
+
+class ConfigReader {
+    +get(key) : String
+}
+
+class ConfigKeys
+
+Scenario_002_Login_Test --|> BaseClass
+Scenario_002_Login_Test --> LoginPage
+Scenario_002_Login_Test --> HomePage
+
+BaseClass --> DriverFactory
+BaseClass --> ConfigReader
+
+DriverFactory --> ConfigReader
+DriverFactory --> WebDriver
+
+LoginPage --|> BasePage
+HomePage --|> BasePage
+
+@enduml

@@ -3,36 +3,57 @@ package pageObject;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+
+import base.BasePage;
+
+/**
+ * Represents the Home Page of the application.
+ * Contains locators and methods to interact with elements on the Home Page.
+ */
 public class HomePage extends BasePage {
 
-	public HomePage(WebDriver driver) {
-		super(driver);
-	}
-	
-	// Locator
-	
-	@FindBy(xpath = "//span[normalize-space()='My Account']")
-	WebElement menuMyAccount;
-	
-	@FindBy(xpath = "//a[normalize-space()='Register']")
-	WebElement lnkRegister;
-	
-	@FindBy(xpath = "//a[normalize-space()='Login']")
-	WebElement lnkLogin;
-	
-	
-	// Action
-	
-	public void clickOnMyAccountMenu() throws InterruptedException {
-		click(menuMyAccount);
-	}
-	
-	public void clickOnRegister() throws InterruptedException {
-		clickAndNavigate(lnkRegister);
-	}
-	
-	public void clickOnLogin() throws InterruptedException {
-		clickAndNavigate(lnkLogin);
-	}
-		
+    /**
+     * Constructor to initialize the HomePage with a WebDriver instance.
+     * @param driver The WebDriver instance to be used.
+     */
+    public HomePage(WebDriver driver) {
+        super(driver);
+    }
+
+    @FindBy(xpath = "//span[normalize-space()='My Account']")
+    private WebElement myAccountMenu;
+
+    @FindBy(linkText = "Login")
+    private WebElement loginLink;
+
+    @FindBy(linkText = "Register")
+    private WebElement registerLink;
+
+    /**
+     * Clicks on the 'My Account' menu dropdown.
+     */
+    public void openMyAccountMenu() {
+        logStep("Open My Account menu");
+        click(myAccountMenu);
+    }
+
+    /**
+     * Clicks on the 'Login' link from the 'My Account' dropdown to navigate to the Login page.
+     * @return A new instance of the LoginPage.
+     */
+    public LoginPage navigateToLoginPage() {
+        logStep("Navigate to Login page");
+        click(loginLink);
+        return new LoginPage(driver);
+    }
+
+    /**
+     * Clicks on the 'Register' link from the 'My Account' dropdown to navigate to the registration page.
+     * @return A new instance of the AccountRegistrationPage.
+     */
+    public AccountRegistrationPage navigateToRegisterPage() {
+        logStep("Navigate to Register page");
+        click(registerLink);
+        return new AccountRegistrationPage(driver);
+    }
 }

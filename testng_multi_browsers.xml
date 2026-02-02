@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite" thread-count="5" parallel="tests">
+
+	<listeners>
+			<listener class-name="utils.ExtentReportManager"/>
+		</listeners>
+
+  <test thread-count="5" name="TestEdge">
+  	 <parameter name="os" value="Windows"></parameter>
+  	 <!-- <parameter name="browser" value="chrome"></parameter> -->
+  	 <parameter name="browser" value="edge"></parameter>
+  	
+  	<groups>
+  		<run>
+  			<include name="Sanity"/>
+  			<include name="Regression"/>
+			<include name="UI"/>
+			<include name="Master"/>
+  			<!-- <exclude name=""/> -->
+  		
+  		</run>
+  	
+  	</groups>
+    <classes>
+      <class name="testCases.Registration_Test"/>
+	  <class name="testCases.Login_Test"/>
+      <class name="testCases.EditAccount_Test"/>
+	  <class name="testCases.Logout_Test"/>
+	  <class name="testCases.Login_UI_Test"/>
+    </classes>
+
+  </test> <!-- Test -->
+  
+  <test thread-count="5" name="TestChrome">
+  	 <parameter name="os" value="Windows"></parameter>
+  	 <!-- <parameter name="browser" value="chrome"></parameter> -->
+  	 <parameter name="browser" value="chrome"></parameter>
+  	
+  	<groups>
+  		<run>
+  			<include name="Sanity"/>
+  			<include name="Regression"/>
+			<include name="UI"/>
+			<include name="Master"/>
+  			<!-- <exclude name=""/> -->
+  		
+  		</run>
+  	
+  	</groups>
+    <classes>
+      <class name="testCases.Registration_Test"/>
+	  <class name="testCases.Login_Test"/>
+      <class name="testCases.EditAccount_Test"/>
+	  <class name="testCases.Logout_Test"/>
+	  <class name="testCases.Login_UI_Test"/>
+    </classes>
+	
+  </test> <!-- Test -->
+</suite> <!-- Suite -->

@@ -4,34 +4,42 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-public class MyAccountPage extends BasePage{
+import base.BasePage;
 
-	public MyAccountPage(WebDriver driver) {
-		super(driver);
-	}
-	
-	// Locators
-	@FindBy(xpath = "//h2[normalize-space()='My Account']")
-	WebElement myAccountTitle;
-	
-	@FindBy(xpath = "//a[@class='list-group-item'][normalize-space()='Logout']")
-	WebElement btnLogout;
-	
-	// Action
-	
-	// Validate page is displayed
-	public boolean checkTitleDisplayed() {
-		try {
-			return (isDisplayed(myAccountTitle));
-		} catch (Exception e) {
-			e.printStackTrace();
-			return (false);
-		}
-	}
-	
-	// Log out 
-	public void logout() {
-		click(btnLogout);
-	}
+/**
+ * Represents the My Account Page, which is displayed after a successful login.
+ * This class provides methods to interact with elements on the My Account page.
+ */
+public class MyAccountPage extends BasePage {
 
+    /**
+     * Constructor for MyAccountPage.
+     * @param driver The WebDriver instance.
+     */
+    public MyAccountPage(WebDriver driver) {
+        super(driver);
+    }
+
+    @FindBy(xpath = "//h2[normalize-space()='My Account']")
+    private WebElement myAccountTitle;
+
+    @FindBy(xpath = "//a[normalize-space()='Logout']")
+    private WebElement btnLogout;
+
+    /**
+     * Checks if the 'My Account' title is displayed on the page.
+     * @return true if the title is displayed, false otherwise.
+     */
+    public boolean isMyAccountPageDisplayed() {
+        logStep("Verify My Account page is displayed");
+        return isDisplayed(myAccountTitle);
+    }
+
+    /**
+     * Clicks the 'Logout' button to log the user out.
+     */
+    public void logout() {
+        logStep("Logout from My Account");
+        click(btnLogout);
+    }
 }

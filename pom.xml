@@ -1,127 +1,310 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>TH_Framwork_01</groupId>
-  <artifactId>TH_Framwork_01</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  
-    <build>
-	 <pluginManagement>
-		 
-		 <plugins>
-			<plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-compiler-plugin</artifactId>
-	          <version>3.14.1</version>
-	        </plugin>
-	        
-	         <plugin>
-		          <groupId>org.apache.maven.plugins</groupId>
-		          <artifactId>maven-surefire-plugin</artifactId>
-		          <version>3.5.4</version>
-		          <configuration>
-					  <suiteXmlFiles>
-						  <suiteXmlFile>master_testng.xml</suiteXmlFile>
-					  </suiteXmlFiles>
-				  </configuration>
-       		 </plugin>
-			 
-		 </plugins>
-		 
-	 </pluginManagement>
-	 
-	 
- </build>
-  
-  <dependencies>
-	<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
-	<dependency>
-	    <groupId>org.seleniumhq.selenium</groupId>
-	    <artifactId>selenium-java</artifactId>
-	    <version>4.39.0</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-	<dependency>
-	    <groupId>org.apache.poi</groupId>
-	    <artifactId>poi</artifactId>
-	    <version>5.5.1</version>
-	</dependency>
-	  
-	<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
-	<dependency>
-	    <groupId>org.apache.poi</groupId>
-	    <artifactId>poi-ooxml</artifactId>
-	    <version>5.5.1</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
-	<dependency>
-	    <groupId>org.apache.logging.log4j</groupId>
-	    <artifactId>log4j-core</artifactId>
-	    <version>2.25.3</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-	<dependency>
-	    <groupId>org.apache.logging.log4j</groupId>
-	    <artifactId>log4j-api</artifactId>
-	    <version>2.25.3</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl -->
-	<dependency>
-	    <groupId>org.apache.logging.log4j</groupId>
-	    <artifactId>log4j-slf4j2-impl</artifactId>
-	    <version>2.25.3</version>
-	    <scope>compile</scope>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-	<dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	    <version>2.21.0</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-	<dependency>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-lang3</artifactId>
-	    <version>3.20.0</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.testng/testng -->
-	<dependency>
-	    <groupId>org.testng</groupId>
-	    <artifactId>testng</artifactId>
-	    <version>7.11.0</version>
-	    <scope>test</scope>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/com.aventstack/extentreports -->
-	<dependency>
-	    <groupId>com.aventstack</groupId>
-	    <artifactId>extentreports</artifactId>
-	    <version>5.1.2</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
-	<dependency>
-	    <groupId>io.github.bonigarcia</groupId>
-	    <artifactId>webdrivermanager</artifactId>
-	    <version>6.3.3</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/ru.yandex.qatools.ashot/ashot -->
-	<dependency>
-	    <groupId>ru.yandex.qatools.ashot</groupId>
-	    <artifactId>ashot</artifactId>
-	    <version>1.5.4</version>
-	</dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  
-  </dependencies>
-  
-  
-  
+    <!-- =========================
+         Maven Model Version
+         ========================= -->
+    <!-- Phiên bản mô hình POM, hiện tại luôn là 4.0.0 -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- =========================
+         Project Coordinates
+         ========================= -->
+    <!-- groupId: tên nhóm (thường là domain đảo ngược hoặc tên công ty / team) -->
+    <groupId>TH_Framwork_01</groupId>
+
+    <!-- artifactId: tên project / module -->
+    <artifactId>TH_Framwork_01</artifactId>
+
+    <!-- version: phiên bản project -->
+    <version>0.0.1-SNAPSHOT</version>
+
+    <!-- =========================
+         Properties
+         ========================= -->
+    <!--
+        Properties dùng để:
+        - Tránh hard-code version
+        - Dùng lại ở nhiều nơi (plugin, dependency)
+        - Dễ nâng cấp về sau
+    -->
+    <properties>
+        <!-- Java version dùng để compile source -->
+        <maven.compiler.source>21</maven.compiler.source>
+
+        <!-- Java version target (bytecode) -->
+        <maven.compiler.target>21</maven.compiler.target>
+
+        <suiteXmlFile>testng.xml</suiteXmlFile>
+
+        <browser></browser>
+        <os></os>
+        <run.mode></run.mode>
+    </properties>
+
+    <!-- =========================
+         Build Configuration
+         ========================= -->
+    <build>
+        <plugins>
+            <!-- =========================
+                    Maven Clean Plugin
+                    ========================= -->
+            <!--
+                Plugin dùng để:
+                - Clean target folder trước khi build
+                - FFmpeg giờ nằm trong src/main/resources nên không bị xóa
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+
+            <!-- =========================
+                    Maven Compiler Plugin
+                    ========================= -->
+            <!--
+                Plugin dùng để:
+                - Compile source Java
+                - Áp dụng Java version (21)
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- Version ổn định mới -->
+                <version>3.14.1</version>
+            </plugin>
+
+            <!-- =========================
+                    Maven Surefire Plugin
+                    ========================= -->
+            <!--
+                Plugin dùng để:
+                - Chạy unit test / integration test
+                - Với TestNG: chạy thông qua testng.xml
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.4</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+
+                    <systemPropertyVariables>
+                        <browser>${browser}</browser>
+                        <os>${os}</os>
+                        <run.mode>${run.mode}</run.mode>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- =========================
+         Dependencies
+         ========================= -->
+    <dependencies>
+
+        <!-- =========================
+             Selenium Java
+             ========================= -->
+        <!--
+            Core Selenium:
+            - WebDriver
+            - WebElement
+            - By, Actions, Wait
+        -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.39.0</version>
+        </dependency>
+
+        <!-- =========================
+             Apache POI (Excel - XLS)
+             ========================= -->
+        <!--
+            Đọc / ghi file Excel (.xls)
+            Dùng cho:
+            - Data-driven testing
+            - Test data từ Excel
+        -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+
+        <!-- =========================
+             Apache POI (Excel - XLSX)
+             ========================= -->
+        <!--
+            Đọc / ghi Excel (.xlsx)
+            Bắt buộc khi làm automation framework
+        -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+
+        <!-- =========================
+             Log4j Core
+             ========================= -->
+        <!--
+            Logging engine:
+            - ghi log ra file
+            - console
+        -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.25.3</version>
+        </dependency>
+
+        <!-- =========================
+             Log4j API
+             ========================= -->
+        <!--
+            API để code gọi logger:
+            Logger logger = LogManager.getLogger(...)
+        -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.25.3</version>
+        </dependency>
+
+        <!-- =========================
+             SLF4J → Log4j2 Bridge
+             ========================= -->
+        <!--
+            Dùng khi:
+            - Thư viện khác log bằng SLF4J
+            - Muốn tất cả log đi qua Log4j2
+        -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>2.25.3</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- =========================
+             Commons IO
+             ========================= -->
+        <!--
+            Hỗ trợ thao tác file:
+            - copy file
+            - delete directory
+            - read/write nhanh
+        -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.21.0</version>
+        </dependency>
+
+        <!-- =========================
+             Commons Lang
+             ========================= -->
+        <!--
+            Utility cho String, Object:
+            - StringUtils
+            - RandomStringUtils
+            - Validate
+        -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.20.0</version>
+        </dependency>
+
+        <!-- =========================
+             TestNG
+             ========================= -->
+        <!--
+            Test framework:
+            - @Test
+            - @BeforeSuite
+            - DataProvider
+            - testng.xml
+        -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.11.0</version>
+            <!-- <scope>test</scope> -->
+        </dependency>
+
+        <!-- =========================
+             ExtentReports
+             ========================= -->
+        <!--
+            Report HTML:
+            - Pass / Fail / Skip
+            - Screenshot
+            - Timeline
+        -->
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>5.1.2</version>
+        </dependency>
+
+        <!-- =========================
+             WebDriverManager
+             ========================= -->
+        <!--
+            Tự động:
+            - download ChromeDriver
+            - FirefoxDriver
+            - không cần set path thủ công
+            Lý do: Từ phiên bản Selenium 4.6.0 trở đi, Selenium đã tích hợp sẵn tính năng Selenium Manager. Nó
+            tự động làm mọi việc mà webdrivermanager từng làm (tự tải chromedriver/geckodriver khớp với
+            trình duyệt).
+            Giữ lại cũng không sao, nhưng xóa đi thì project nhẹ hơn và bớt phụ thuộc bên thứ 3.
+        -->
+        <!-- <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>6.3.3</version>
+        </dependency> -->
+
+        <!-- =========================
+             AShot
+             ========================= -->
+        <!--
+            Chụp screenshot nâng cao:
+            - full page
+            - element
+            - compare image
+        -->
+        <dependency>
+            <groupId>ru.yandex.qatools.ashot</groupId>
+            <artifactId>ashot</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+
+        <!-- =========================
+             Monte Screen Recorder
+             ========================= -->
+        <!--
+            Video Recording:
+            - Record màn hình khi test fail
+            - Tự động xoá video khi test pass
+            - Tích hợp với TestNG Listener
+        -->
+        <dependency>
+            <groupId>com.github.stephenc.monte</groupId>
+            <artifactId>monte-screen-recorder</artifactId>
+            <version>0.7.7.0</version>
+        </dependency>
+
+    </dependencies>
+
 </project>

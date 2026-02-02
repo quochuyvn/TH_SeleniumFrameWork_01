@@ -42,3 +42,12 @@ Thumbs.db
 ####################################
 **/*.env
 **/local.properties
+
+####################################
+# Documentation (Internal)
+####################################
+**/documents/*.md
+FRAMEWORK_USER_GUIDE.md
+VIDEO_RECORDING_README.md
+VIDEO_RECORDING_IMPLEMENTATION.md
+IMPLEMENTATION_COMPLETE_*.md
